@@ -4,8 +4,34 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.todolist.repository.UserMapper">
+    <resultMap id="userResultMap" type="com.example.todolist.entity.User">
+        <id property="userId" column="user_id" />
+        <result property="email" column="email" />
+        <result property="password" column="password" />
+        <result property="name" column="name" />
+    </resultMap>
+
+    <select id="findUserByEmail" parameterType="String" resultMap="userResultMap">
+        select
+            *
+        from
+            user_tb
+        where
+            email = #{email}
+    </select>
+
+<!--    <select id="getUserCountByEmail" parameterType="String" resultType="Integer">-->
+<!--        select-->
+<!--            count(*)-->
+<!--        from-->
+<!--            user_tb-->
+<!--        where-->
+<!--            email = #{email}-->
+<!--    </select>-->
+
     <insert id="saveUser" parameterType="com.example.todolist.entity.User">
         insert into user_tb
         values (0, #{email}, #{password}, #{name})
     </insert>
+
 </mapper>
