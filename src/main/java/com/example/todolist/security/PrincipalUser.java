@@ -21,9 +21,7 @@ public class PrincipalUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-
-        return authorityList;
+        return user.toGrantedAuthorityList();
     }
 
     @Override

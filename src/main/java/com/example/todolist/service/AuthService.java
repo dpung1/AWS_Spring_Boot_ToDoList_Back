@@ -48,11 +48,10 @@ public class AuthService {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(signinReqDto.getEmail(), signinReqDto.getPassword());
 
-        System.out.println(authenticationToken.getName());
-
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         String accessToken = jwtTokenProvider.generateAccessToken(authentication);
+        System.out.println(accessToken);
 
         return accessToken;
     }
@@ -60,7 +59,7 @@ public class AuthService {
     public Boolean authenticate(String token) {
         String accessToken = jwtTokenProvider.convertToken(token);
         if(!jwtTokenProvider.validateToken(accessToken)) {
-            throw new JwtException("사용자 정보가 만교되었습니다. 다시 로그인하세요.");
+            throw new JwtException("사용자 정보가 만료되었습니다. 다시 로그인하세요.");
         }
         return true;
     }

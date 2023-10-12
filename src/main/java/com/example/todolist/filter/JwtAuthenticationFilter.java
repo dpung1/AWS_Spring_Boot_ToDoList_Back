@@ -1,5 +1,6 @@
-package com.example.todolist.security;
+package com.example.todolist.filter;
 
+import com.example.todolist.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,8 +20,8 @@ public class JwtAuthenticationFilter extends GenericFilter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-        String token = httpServletRequest.getHeader("Authorization");
-        String jwtToken = jwtTokenProvider.convertToken(token);
+        String authorization = httpServletRequest.getHeader("Authorization");
+        String jwtToken = jwtTokenProvider.convertToken(authorization);
         String uri = httpServletRequest.getRequestURI();
 
         if(!uri.startsWith("/auth") && jwtTokenProvider.validateToken(jwtToken)) {

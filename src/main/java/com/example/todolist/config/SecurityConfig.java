@@ -1,6 +1,6 @@
 package com.example.todolist.config;
 
-import com.example.todolist.security.JwtAuthenticationFilter;
+import com.example.todolist.filter.JwtAuthenticationFilter;
 import com.example.todolist.exception.CustomAuthenticateEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +31,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/auth/**")
                 .permitAll()
+                .antMatchers("/admin/**")
+                .hasRole("admin")
+                .anyRequest()
+                .authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()

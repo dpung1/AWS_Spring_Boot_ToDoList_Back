@@ -41,6 +41,7 @@ public class JwtTokenProvider {
         Date tokenExpiresDate = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
         JwtBuilder jwtBuilder = Jwts.builder()
                                     .setSubject("AccessToken")
+                                    .claim("auth", authentication.getAuthorities())
                                     .setExpiration(tokenExpiresDate)
                                     .signWith(key, SignatureAlgorithm.HS256);
 
@@ -57,7 +58,8 @@ public class JwtTokenProvider {
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token);
+                    .parseClaimsJws(token)
+                    .getBody();
         } catch (Exception e) {
             return false;
         }

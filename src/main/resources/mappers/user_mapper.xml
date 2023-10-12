@@ -9,13 +9,38 @@
         <result property="email" column="email" />
         <result property="password" column="password" />
         <result property="name" column="name" />
+        <collection property="authorities" javaType="List" resultMap="authorityResultMap" />
+    </resultMap>
+
+    <resultMap id="authorityResultMap" type="com.example.todolist.entity.Authority">
+        <id property="authorityId" column="authority_id" />
+        <result property="userId" column="at_user_id" />
+        <result property="roleId" column="at_role_id" />
+        <association property="role" resultMap="roleResultMap" />
+    </resultMap>
+
+    <resultMap id="roleResultMap" type="com.example.todolist.entity.Role">
+        <id property="roleId" column="role_id" />
+        <result property="roleName" column="role_name" />
     </resultMap>
 
     <select id="findUserByEmail" parameterType="String" resultMap="userResultMap">
         select
-            *
+            ut.user_id,
+            ut.email,
+            ut.password,
+            ut.name,
+
+            at.authority_id,
+            at.user_id as at_user_id,
+            at.role_id as at_role_id,
+
+            rt.role_id,
+            rt.role_name
         from
-            user_tb
+            user_tb ut
+            left outer join authority_tb at on(at.user_id = ut.user_id)
+            left outer join role_tb rt on(rt.role_id = at.role_id)
         where
             email = #{email}
     </select>
