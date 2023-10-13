@@ -33,7 +33,6 @@ public class CustomAuthenticateEntryPoint implements AuthenticationEntryPoint {
         String responseJson = jsonMapper.writeValueAsString(errorMap);
 
         response.getWriter().println(responseJson);
-
     }
 
     private String getErrorMessage(AuthenticationException authException) {

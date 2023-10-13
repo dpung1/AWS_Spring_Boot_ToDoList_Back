@@ -17,8 +17,6 @@ public class PrincipalUser implements UserDetails {
         this.user = user;
     }
 
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.toGrantedAuthorityList();

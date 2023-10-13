@@ -22,14 +22,16 @@ public class JwtAuthenticationFilter extends GenericFilter {
 
         String authorization = httpServletRequest.getHeader("Authorization");
         String jwtToken = jwtTokenProvider.convertToken(authorization);
-        String uri = httpServletRequest.getRequestURI();
+        String reqUri = httpServletRequest.getRequestURI();
 
-        if(!uri.startsWith("/auth") && jwtTokenProvider.validateToken(jwtToken)) {
-            Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if(reqUri.startsWith("/auth") && !reqUri.startsWith("/authenticated")) {
+            chain.doFilter(request, response);
+            return;
         }
 
+        Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
     }
 }

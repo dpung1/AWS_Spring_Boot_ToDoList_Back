@@ -38,7 +38,6 @@ public class AuthController {
             errorMap.put("email", "이미 사용중인 이메일 입니다.");
             return ResponseEntity.badRequest().body(errorMap);
         }
-
         return ResponseEntity.ok().body(authService.insertUser(signupReqDto));
     }
 
@@ -50,9 +49,8 @@ public class AuthController {
         return ResponseEntity.ok().body(accessToken);
     }
 
-    @GetMapping("/auth/authenticated")
-    public ResponseEntity<?> authenticate() {
-
-        return ResponseEntity.ok().body(null);
+    @GetMapping("/authenticated")
+    public ResponseEntity<?> authenticated() {
+        return ResponseEntity.ok(true);
     }
 }

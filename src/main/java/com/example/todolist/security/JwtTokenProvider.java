@@ -1,8 +1,11 @@
 package com.example.todolist.security;
 
+import com.example.todolist.entity.Authority;
+import com.example.todolist.entity.Role;
 import com.example.todolist.service.PrincipalDetailsService;
 import com.example.todolist.entity.User;
 import com.example.todolist.repository.UserMapper;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,7 +19,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class JwtTokenProvider {
@@ -76,17 +82,39 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String accessToken) {
 
+        User user = null;
         Authentication authentication = null;
+        Claims claims = null;
 
-        String username = Jwts.parserBuilder()
-                            .setSigningKey(key)
-                            .build()
-                            .parseClaimsJws(accessToken)
-                            .getBody()
-                            .get("email")
-                            .toString();
+        try {
+            claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody();
+        } catch (Exception e) {
+            return null;
+        }
 
-        PrincipalUser principalUser = (PrincipalUser) principalService.loadUserByUsername(username);
+        String username = claims.get("email", String.class);
+        List<Object> authList = claims.get("auth", List.class);
+
+        List<Authority> authorities = new ArrayList<>();
+        authList.forEach(auth -> {
+            Role role = new Role();
+            role.setRoleName(((Map<String, String>) auth).get("authority"));
+
+            Authority authority = new Authority();
+            authority.setRole(role);
+            authorities.add(authority);
+        });
+
+         user = User.builder()
+                .email(username)
+                .authorities(authorities)
+                .build();
+
+        PrincipalUser principalUser = new PrincipalUser(user);
 
         authentication = new UsernamePasswordAuthenticationToken(principalUser, null, principalUser.getAuthorities());
 
