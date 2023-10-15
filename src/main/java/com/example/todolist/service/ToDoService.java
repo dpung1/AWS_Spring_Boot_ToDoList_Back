@@ -35,9 +35,9 @@ public class ToDoService {
 
     public List<GetToDoListRepsDto> getToDoList() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
+        // 여러개의 데이터가 있으므로 List로 생성
         List<GetToDoListRepsDto> getToDoListRepsDtos = new ArrayList<>();
-
+        // 반복으로 가져와서 데이터를 넣는다.
         toDoMapper.getToDoListByEmail(email).forEach(todo -> {
             getToDoListRepsDtos.add(todo.toToDoListRespDto());
         });
